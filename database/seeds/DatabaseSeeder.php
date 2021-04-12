@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Http\Controllers\CustomerController;
-use Faker\Factory as Faker; 
+use Faker\Factory as Faker; //use Faker
 
 class DatabaseSeeder extends Seeder
 {
