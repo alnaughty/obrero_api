@@ -36,7 +36,7 @@ steps:
     path: /tmp
 
   commands:
-  - composer install --no-dev
+  - composer install
 
 - name: rebuild cache
   image: registry.qonvextechnology.com:5000/drillster/drone-volume-cache:latest
