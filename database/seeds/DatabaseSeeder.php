@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use App\Http\Controllers\CustomerController;
 use Faker\Factory as Faker; //use Faker
 
+//comment of the day
 class DatabaseSeeder extends Seeder
 {
     /**
