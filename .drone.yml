@@ -1,0 +1,71 @@
+# Drone config file for laravel application with vue frontend that needs js files built
+#
+# VERSION: 1.0.2
+#
+# REQUIREMENTS: build_js.sh file from qonvex-backoffice
+
+kind: pipeline
+type: docker
+name: deploy-master
+
+trigger:
+  branch:
+  - master
+  - feature/drone-ci
+
+steps:
+- name: restore cache
+  image: registry.qonvextechnology.com:5000/drillster/drone-volume-cache:latest
+  settings:
+    restore: true
+    cache_key:
+    - DRONE_STAGE_NAME
+    - DRONE_REPO_OWNER
+    - DRONE_REPO_NAME
+    - DRONE_REPO_BRANCH
+    mount:
+    - 'vendor'
+  volumes:
+  - name: cache
+    path: /cache
+
+- name: install php dependencies
+  image: registry.qonvextechnology.com:5000/composer:latest
+  volumes:
+  - name: composer
+    path: /tmp
+
+  commands:
+  - composer install
+
+- name: rebuild cache
+  image: registry.qonvextechnology.com:5000/drillster/drone-volume-cache:latest
+  settings:
+    rebuild: true
+    cache_key:
+    - DRONE_STAGE_NAME
+    - DRONE_REPO_OWNER
+    - DRONE_REPO_NAME
+    - DRONE_REPO_BRANCH
+    mount:
+    - 'vendor'
+  volumes:
+  - name: cache
+    path: /cache
+
+- name: build image
+  image: registry.qonvextechnology.com:5000/plugins/docker
+  privileged: true
+  settings:
+    repo: registry.qonvextechnology.com:5000/${DRONE_REPO_OWNER,,}/${DRONE_REPO_NAME,,}
+    tags: master
+    cache_from:
+    - "registry.qonvextechnology.com:5000/${DRONE_REPO_OWNER,,}/${DRONE_REPO_NAME,,}:master"
+
+volumes:
+- name: composer
+  host:
+    path: /tmp/composer
+- name: cache
+  host:
+    path: /tmp/drone-cache
