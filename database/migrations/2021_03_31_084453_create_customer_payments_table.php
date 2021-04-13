@@ -18,6 +18,7 @@ class CreateCustomerPaymentsTable extends Migration
             $table->integer('customer_id')->unsigned();
             $table->integer('status')->default(0);
             $table->double('amount');
+            $table->double('balance')->default(0.00);
             $table->timestamps();
 
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
